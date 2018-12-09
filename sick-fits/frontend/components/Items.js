@@ -6,7 +6,7 @@ import Item from './Item';
 
 const ALLL_ITEMS_QUERY = gql`
   query ALLL_ITEMS_QUERY {
-    items: getItems {
+    items {
       id
       title
       price
@@ -34,7 +34,6 @@ class Items extends React.Component {
     return (
       <Query query={ALLL_ITEMS_QUERY}>
         {({ data, error, loading }) => {
-          console.log(data)
           if (loading) return <p>Loading...</p>
           if (error) return <p>Error: { error.message }</p>
           return (
