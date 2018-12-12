@@ -4,7 +4,7 @@ import gql from 'graphql-tag';
 import styled from 'styled-components';
 import Item from './Item';
 
-const ALLL_ITEMS_QUERY = gql`
+export const ALL_ITEMS_QUERY = gql`
   query ALLL_ITEMS_QUERY {
     items {
       id
@@ -32,7 +32,7 @@ const ItemsList = styled.div`
 class Items extends React.Component {
   render() {
     return (
-      <Query query={ALLL_ITEMS_QUERY}>
+      <Query query={ALL_ITEMS_QUERY}>
         {({ data, error, loading }) => {
           if (loading) return <p>Loading...</p>
           if (error) return <p>Error: { error.message }</p>
