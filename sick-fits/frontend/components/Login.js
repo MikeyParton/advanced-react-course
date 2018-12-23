@@ -3,21 +3,19 @@ import gql from 'graphql-tag';
 import { Mutation } from 'react-apollo';
 import Form from './styles/Form';
 import Error from './ErrorMessage';
+import { CURRENT_USER_QUERY } from './User';
 
-const SIGNUP_MUTATION = gql`
-  mutation SIGNUP_MUTATION($email: String!, $name: String!, $password: String!) {
-    signUp(email: $email, name: $name, password: $password) {
+const LOGIN_MUTATION = gql`
+  mutation LOGIN_MUTATION($email: String!, $password: String!) {
+    login(email: $email, password: $password) {
       id
-      email
-      name
     }
   }
 `;
 
-class Signup extends Component {
+class Login extends Component {
   state = {
     email: '',
-    name: '',
     password: ''
   }
 
@@ -25,35 +23,34 @@ class Signup extends Component {
     this.setState({ [event.target.name]: event.target.value });
   }
 
-  handleSubmit = async (event, signup) => {
+  handleSubmit = async (event, login) => {
     event.preventDefault()
-    const user = await signup()
-    console.log(user)
+    const user = await login()
   }
 
   render() {
     const { email, name, password } = this.state;
     return (
-      <Mutation mutation={SIGNUP_MUTATION} variables={this.state}>
-        {(signup, { error, loading }) => (
-          <Form method="post" onSubmit={(e) => this.handleSubmit(e, signup)}>
+      <Mutation
+        mutation={LOGIN_MUTATION}
+        variables={this.state}
+        refetchQueries={[ { query: CURRENT_USER_QUERY } ]}
+        >
+        {(login, { error, loading }) => (
+          <Form method="post" onSubmit={(e) => this.handleSubmit(e, login)}>
             <fieldset aria-busy={loading} disabled={loading}>
-              <h2>Signup for an account</h2>
+              <h2>Login to your account</h2>
               <Error error={error} />
               <label htmlFor="email">
                 Email
                 <input type="text" name="email" placeholder="email" value={email} onChange={this.saveToState}/>
-              </label>
-              <label htmlFor="name">
-                Name
-                <input type="text" name="name" placeholder="name" value={name} onChange={this.saveToState}/>
               </label>
               <label htmlFor="password">
                 Password
                 <input type="password" name="password" placeholder="password" value={password} onChange={this.saveToState}/>
               </label>
             </fieldset>
-            <button>Sign Up</button>
+            <button>Login</button>
           </Form>
         )}
       </Mutation>
@@ -62,4 +59,4 @@ class Signup extends Component {
 
 }
 
-export default Signup;
+export default Login;

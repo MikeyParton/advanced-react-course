@@ -9,6 +9,7 @@ type Query {
 
 type Mutation {
   signUp(email: String! password: String! name: String!): User!
+  login(email: String! password: String!): User
   createItem(title: String! description: String! image: String largeImage: String price: Int!): Item!
   updateItem(id: ID! title: String description: String price: Int): Item!
   deleteItem(id: ID!): Item!

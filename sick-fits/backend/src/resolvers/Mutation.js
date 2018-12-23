@@ -13,14 +13,27 @@ const Mutations = {
         permission: { set: ['USER'] }
       }
     }, info);
-
-    const jwt = require('jsonwebtoken');
     const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET)
     ctx.response.cookie('token', token, {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 365 // 1 Year
     });
 
+    return user;
+  },
+  async login(parent, args, ctx, info) {
+    const user = await ctx.db.query.user({ where: { email: args.email } });
+    if (!user) {
+      throw new Error('No account')
+    };
+    if (!bcrypt.compareSync(args.password, user.password)) {
+      throw new Error('Wrong password')
+    };
+    const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET)
+    ctx.response.cookie('token', token, {
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 365 // 1 Year
+    });
     return user;
   },
   async createItem(parent, args, ctx, info) {
